@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Entity
-public class User {
+public class UserEntity {
 
     @Id
     @Column(updatable = false, nullable = false)
@@ -29,10 +29,10 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private List<Phone> phones;
+    private List<PhoneEntity> phones;
 
     // No-args constructor
-    public User() {
+    public UserEntity() {
     }
 
     // Getters and setters
@@ -101,11 +101,11 @@ public class User {
         isActive = active;
     }
 
-    public List<Phone> getPhones() {
+    public List<PhoneEntity> getPhones() {
         return phones;
     }
 
-    public void setPhones(List<Phone> phones) {
+    public void setPhones(List<PhoneEntity> phones) {
         this.phones = phones;
     }
 

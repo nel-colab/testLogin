@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import com.example.demo.JwtUtil;
 import com.example.demo.exception.CustomValidationException;
-import com.example.demo.model.Phone;
-import com.example.demo.model.User;
+import com.example.demo.model.PhoneEntity;
+import com.example.demo.model.UserEntity;
 import com.example.demo.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;
@@ -39,7 +39,7 @@ public class UserService {
         this.jwtUtil = jwtUtil;
     }
 
-    public User save(User user) {
+    public UserEntity save(UserEntity user) {
         // Validar email
         if (user.getEmail() == null || !EMAIL_REGEX.matcher(user.getEmail()).matches()) {
             throw new CustomValidationException(1001, "Email inválido");
@@ -66,7 +66,7 @@ public class UserService {
 
         // Asignar relación con teléfonos
         if (user.getPhones() != null) {
-            for (Phone phone : user.getPhones()) {
+            for (PhoneEntity phone : user.getPhones()) {
                 phone.setUser(user);
             }
         }
@@ -75,7 +75,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User login(String authHeader) {
+    public UserEntity login(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new CustomValidationException(1004, "Token inválido");
         }
@@ -90,7 +90,7 @@ public class UserService {
 
         String email = claims.get("email", String.class);
 
-        User user = userRepository.findByEmail(email)
+        UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomValidationException(1006, "Usuario no encontrado"));
 
         user.setLastLogin(LocalDateTime.now());
@@ -101,7 +101,7 @@ public class UserService {
         return user;
     }
 
-    private String generateJwtToken(User user) {
+    private String generateJwtToken(UserEntity user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME_MS);
 

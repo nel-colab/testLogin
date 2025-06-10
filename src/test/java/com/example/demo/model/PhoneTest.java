@@ -8,7 +8,7 @@ class PhoneTest {
 
     @Test
     void gettersAndSettersWork() {
-        Phone phone = new Phone();
+        PhoneEntity phone = new PhoneEntity();
         phone.setId(1L);
         phone.setNumber(123456789L);
         phone.setCitycode(55);
@@ -18,7 +18,7 @@ class PhoneTest {
         assertNull(phone.getUser());
 
         // set and get user
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setId("user-1");
         phone.setUser(user);
         assertSame(user, phone.getUser());
@@ -32,7 +32,7 @@ class PhoneTest {
 
     @Test
     void toStringContainsAllFields() {
-        Phone phone = new Phone();
+        PhoneEntity phone = new PhoneEntity();
         phone.setId(2L);
         phone.setNumber(222L);
         phone.setCitycode(2);
@@ -47,7 +47,7 @@ class PhoneTest {
         assertTrue(s1.contains("user=null"));
 
         // with user
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setId("user-xyz");
         phone.setUser(user);
         String s2 = phone.toString();

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.User;
+import com.example.demo.model.UserEntity;
 import com.example.demo.service.UserService;
 import com.example.demo.exception.CustomValidationException;
 
@@ -29,19 +29,19 @@ public class UserControllerTest {
 
     @Test
     public void testCreateUser_Success() {
-        User inputUser = new User();
+        UserEntity inputUser = new UserEntity();
         inputUser.setEmail("test@example.com");
         inputUser.setPassword("Password123");
         inputUser.setName("Test User");
         inputUser.setPhones(Collections.emptyList());
 
-        User savedUser = new User();
+        UserEntity savedUser = new UserEntity();
         savedUser.setId("1234");
         savedUser.setEmail(inputUser.getEmail());
 
         when(userService.save(inputUser)).thenReturn(savedUser);
 
-        ResponseEntity<User> response = userController.createUser(inputUser);
+        ResponseEntity<UserEntity> response = userController.createUser(inputUser);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(savedUser, response.getBody());
@@ -49,7 +49,7 @@ public class UserControllerTest {
 
     @Test
     public void testCreateUser_InvalidEmail() {
-        User invalidUser = new User();
+        UserEntity invalidUser = new UserEntity();
         invalidUser.setEmail("invalid-email");
         invalidUser.setPassword("Password123");
 
@@ -66,7 +66,7 @@ public class UserControllerTest {
     @Test
     public void testLoginUser_Success() {
         String token = "Bearer valid.jwt.token";
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setEmail("test@example.com");
         when(userService.login(token)).thenReturn(user);
 

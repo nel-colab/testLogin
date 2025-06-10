@@ -12,7 +12,7 @@ public class UserTest {
 
     @Test
     void gettersAndSettersWork() {
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setId("abc-123");
         user.setName("Nombre");
         user.setEmail("user@example.com");
@@ -38,7 +38,7 @@ public class UserTest {
 
     @Test
     void toStringContainsFields() {
-        User u = new User();
+        UserEntity u = new UserEntity();
         u.setId("xyz");
         u.setName("Test");
         u.setEmail("t@example.com");
@@ -56,9 +56,9 @@ public class UserTest {
 
     @Test
     void phonesAssignmentAndUserLink() {
-        User u = new User();
+        UserEntity u = new UserEntity();
         u.setId("user1");
-        Phone p1 = new Phone();
+        PhoneEntity p1 = new PhoneEntity();
         p1.setId(1L);
         p1.setNumber(123456L);
         p1.setCitycode(1);
@@ -66,14 +66,14 @@ public class UserTest {
         // En el modelo Phone, no se asigna usuario automáticamente (ojo)
         p1.setUser(u);
 
-        Phone p2 = new Phone();
+        PhoneEntity p2 = new PhoneEntity();
         p2.setId(2L);
         p2.setNumber(654321L);
         p2.setCitycode(2);
         p2.setContrycode("58");
         p2.setUser(u);
 
-        List<Phone> phoneList = new ArrayList<>();
+        List<PhoneEntity> phoneList = new ArrayList<>();
         phoneList.add(p1);
         phoneList.add(p2);
         u.setPhones(phoneList);
@@ -81,14 +81,14 @@ public class UserTest {
         assertNotNull(u.getPhones());
         assertEquals(2, u.getPhones().size());
 
-        for (Phone phone : u.getPhones()) {
+        for (PhoneEntity phone : u.getPhones()) {
             assertSame(u, phone.getUser());
         }
     }
 
     @Test
     void phonesListCanBeNullOrEmpty() {
-        User u = new User();
+        UserEntity u = new UserEntity();
 
         // phones inicialmente null
         assertNull(u.getPhones());

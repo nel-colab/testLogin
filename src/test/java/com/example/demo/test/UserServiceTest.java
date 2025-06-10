@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.demo.JwtUtil;
 import com.example.demo.exception.CustomValidationException;
-import com.example.demo.model.Phone;
-import com.example.demo.model.User;
+import com.example.demo.model.PhoneEntity;
+import com.example.demo.model.UserEntity;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 
@@ -39,7 +39,7 @@ class UserServiceTest {
 
     @Test
     void whenInvalidEmail_thenThrowException() {
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setEmail("mal_email");
         user.setPassword("abcdeF12"); // válida, pero aquí falla por email
 
@@ -51,7 +51,7 @@ class UserServiceTest {
 
     @Test
     void whenInvalidPassword_thenThrowException() {
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setEmail("test@example.com");
         user.setPassword("sinMayusculas1"); // inválida
 
@@ -63,7 +63,7 @@ class UserServiceTest {
 
     @Test
     void whenUserExists_thenThrowException() {
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setEmail("existente@example.com");
         user.setPassword("abcdeF12"); // válida
 
@@ -77,7 +77,7 @@ class UserServiceTest {
 
     @Test
     void whenValidUser_thenSaveUser() {
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setEmail("nuevo@example.com");
         user.setPassword("abcdeF12");
         user.setName("Nombre");
@@ -85,7 +85,7 @@ class UserServiceTest {
         when(userRepository.existsByEmail("nuevo@example.com")).thenReturn(false);
         when(userRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
-        User savedUser = userService.save(user);
+        UserEntity savedUser = userService.save(user);
 
         assertNotNull(savedUser.getId());
         assertTrue(savedUser.getIsActive());
@@ -94,40 +94,40 @@ class UserServiceTest {
 
     @Test
     void whenUserHasPhones_thenPhonesAreLinkedToUser() {
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setEmail("phoneuser@example.com");
         user.setPassword("abcdeF12"); // contraseña que cumple la regex
         user.setName("Usuario Con Teléfonos");
 
-        Phone phone1 = new Phone();
+        PhoneEntity phone1 = new PhoneEntity();
         phone1.setNumber(123456789L);
         phone1.setCitycode(1);
         phone1.setContrycode("57");
 
-        Phone phone2 = new Phone();
+        PhoneEntity phone2 = new PhoneEntity();
         phone2.setNumber(987654321L);
         phone2.setCitycode(2);
         phone2.setContrycode("58");
 
-        List<Phone> phoneList = List.of(phone1, phone2);
+        List<PhoneEntity> phoneList = List.of(phone1, phone2);
         user.setPhones(phoneList);
 
         when(userRepository.existsByEmail("phoneuser@example.com")).thenReturn(false);
-        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(userRepository.save(any(UserEntity.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // Ejecutamos save(), entra en el bloque de phones y setea user en cada Phone
-        User savedUser = userService.save(user);
+        UserEntity savedUser = userService.save(user);
 
         assertNotNull(savedUser.getPhones());
         assertEquals(2, savedUser.getPhones().size());
-        for (Phone phone : savedUser.getPhones()) {
+        for (PhoneEntity phone : savedUser.getPhones()) {
             assertEquals(savedUser, phone.getUser(), "El teléfono debería tener referenciado al usuario");
         }
     }
 
     @Test
     void whenValidToken_thenReturnUserWithNewToken() {
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setId("e5c6cf84-8860-4c00-91cd-22d3be28904e");
         user.setEmail("test@example.com");
         user.setName("Test User");
@@ -139,9 +139,9 @@ class UserServiceTest {
         String validAuthHeader = "Bearer " + jwtUtil.generateJwtToken(user);
 
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+        when(userRepository.save(any(UserEntity.class))).thenAnswer(i -> i.getArgument(0));
 
-        User loggedUser = userService.login(validAuthHeader);
+        UserEntity loggedUser = userService.login(validAuthHeader);
 
         assertNotNull(loggedUser);
         assertEquals(user.getId(), loggedUser.getId());
